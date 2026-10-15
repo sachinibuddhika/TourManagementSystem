@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="TourManagementSystem.API/TourManagementSystem.API.csproj" />
+  <Project Path="TourManagementSystem.Application/TourManagementSystem.Application.csproj" />
+  <Project Path="TourManagementSystem.Domain/TourManagementSystem.Domain.csproj" />
+  <Project Path="TourManagementSystem.Infrastructure/TourManagementSystem.Infrastructure.csproj" />
+</Solution>
