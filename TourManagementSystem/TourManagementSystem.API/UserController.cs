@@ -3,20 +3,31 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using System.Net.Sockets;
 using TourManagementSystem.Application;
+using TourManagementSystem.Application.Common;
 using TourManagementSystem.Domain;
 
 namespace TourManagementSystem.API
 {
+    [ApiController]
+    [Route("api/users")]
     public class UserController:ControllerBase
     {
 
         UserService _userService;
+       
         public UserController(UserService userService)
         {
             _userService = userService;
         }
 
-        [HttpGet("id")]
+        [HttpPost]
+        public async Task<ActionResult<User>> AddUser(User user)
+        {
+            var savedUser= await _userService.AddUser(user);
+            return Ok(savedUser);
+        }
+
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<User>> GetUserById(int id)
         {
            var user=await _userService.GetUserById(id);
@@ -42,7 +53,7 @@ namespace TourManagementSystem.API
 
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id:int}")]
         public async Task<ActionResult<User>> UpdateUserById(int id,User user)
         {
             var updatedUser = await _userService.UpdateUser(id,user);
@@ -54,8 +65,8 @@ namespace TourManagementSystem.API
             return Ok(updatedUser);
         }
 
-        [HttpDelete("id")]
-        public async Task<ActionResult<bool>> DeleteUserById(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteUserById(int id)
         {
             var deletedUser=await _userService.DeleteUser(id);
             if (!deletedUser)

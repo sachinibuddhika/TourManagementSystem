@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using TourManagementSystem.Application.Common;
+using TourManagementSystem.Application.Common.Interfaces;
 using TourManagementSystem.Domain;
 
 
@@ -9,9 +12,13 @@ namespace TourManagementSystem.Application
     public class UserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly IPasswordHasher _passwordHasher;
+
+        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository;
+
+            _passwordHasher= passwordHasher;
         }
 
         public Task<List<User>> GetAllUsers()
@@ -24,12 +31,14 @@ namespace TourManagementSystem.Application
             return _userRepository.GetUserById(id);
         }
 
-        public Task AddUser(User user)
+        public async Task<User> AddUser(User user)
         {
-            return _userRepository.AddUser(user);
+            user.Password= _passwordHasher.HashingPassword(user.Password);
+            await _userRepository.AddUser(user);
+            return user;
         }
 
-        public async Task<User> UpdateUser(int id, User user)
+        public async Task<User?> UpdateUser(int id, User user)
         {
             var existingUser = await _userRepository.GetUserById(id);
 
